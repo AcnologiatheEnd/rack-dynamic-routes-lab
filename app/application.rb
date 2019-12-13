@@ -34,7 +34,7 @@ class Application
     
         
     else
-      resp.write "route not found"
+      resp.write "Route not found"
     end
 
     resp.finish
