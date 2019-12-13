@@ -6,38 +6,22 @@ class Application
     resp = Rack::Response.new
     req = Rack::Request.new(env)
 
-    if req.path.match(/items/)
-      @@items.each do |item|
-        resp.write "#{item}\n"
-      end
-    elsif req.path.match(/search/)
-      search_term = req.params["q"]
-      resp.write handle_search(search_term)
-    elsif req.path.match(/items/)
-      if @@items.empty?
-        resp.write "Your cart is empty"
+    if req.path.match(/items\/.+/)
+     item_name = req.path.split("/items/").last
+      item = @@items.detect { |i| i.name == item_name }
+      if item
+        resp.write item.price
       else
-        @@cart.each do |i|
-          resp.write "#{i}\n"
-        end
+        resp.write "Item not found"
+        resp.status = 400
       end
-    elsif req.path.match(/add/)
-      item = req.params["item"]
-      
-      if @@items.include?(item)
-        @@cart << item
-        resp.write "added #{item}"
-      else
-        resp.write "We don't have that item"
-      end
-    
-        
     else
       resp.write "Route not found"
       resp.status = 404
     end
 
     resp.finish
+  end
   end
 
   def handle_search(search_term)
