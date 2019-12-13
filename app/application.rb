@@ -8,7 +8,7 @@ class Application
 
     if req.path.match(/items\/.+/)
      item_name = req.path.split("/items/").last
-      item = @@items.detect { |i| i.name == item_name }
+      item = @@items.find { |i| i.name == item_name }
       if item
         resp.write item.price
       else
@@ -22,13 +22,6 @@ class Application
 
     resp.finish
   end
-  end
-
-  def handle_search(search_term)
-    if @@items.include?(search_term)
-      return "#{search_term} is one of our items"
-    else
-      return "Couldn't find #{search_term}"
-    end
-  end
 end
+
+  
